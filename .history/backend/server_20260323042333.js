@@ -63,9 +63,10 @@ const phHeaders = {
  * GET /api/verify
  * Validates the Authorization token. Returns 200 if correct, 401 if not.
  */
-app.get('/api/verify', requireAuth, (req, res) => {
+app.get("/api/verify", requireAuth, (req, res) => {
   return res.status(200).json({ ok: true });
 });
+
 
 /**
  * GET /api/notes
