@@ -32,12 +32,7 @@ if (!SECRET_TOKEN) {
 }
 
 // ─── Middleware ─────────────────────────────────────────────────────────────
-// Allow cross-origin requests from the frontend (localhost:5173 in dev, or any origin)
-app.use(cors({
-  origin: true,             // Reflect the request origin (allows any origin in dev)
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());            // Allow cross-origin requests from the frontend
 app.use(express.json());    // Parse incoming JSON request bodies
 
 // ─── Auth Middleware ────────────────────────────────────────────────────────
@@ -63,15 +58,6 @@ const phHeaders = {
 };
 
 // ─── Routes ─────────────────────────────────────────────────────────────────
-
-/**
- * GET /api/verify
- * Validates the Authorization token. Returns 200 if correct, 401 if not.
- */
-app.get("/api/verify", requireAuth, (req, res) => {
-  return res.status(200).json({ ok: true });
-});
-
 
 /**
  * GET /api/notes
@@ -169,17 +155,10 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not Found', path: req.originalUrl });
 });
 
-// ─── Start server (local dev) or export for Vercel serverless ───────────────
-// When running locally: node server.js → starts a real HTTP server
-// When running on Vercel: module.exports = app → Vercel wraps it as a serverless function
-if (process.env.VERCEL) {
-  // Vercel serverless — just export the app, no listen() needed
-  module.exports = app;
-} else {
-  app.listen(PORT, () => {
-    console.log(`\n🔐 SecureNote API running → http://localhost:${PORT}`);
-    console.log(`   GET    http://localhost:${PORT}/api/notes`);
-    console.log(`   POST   http://localhost:${PORT}/api/notes  (Auth required)`);
-    console.log(`   DELETE http://localhost:${PORT}/api/notes/:id  (Auth required)\n`);
-  });
-}
+// ─── Start server ───────────────────────────────────────────────────────────
+app.listen(PORT, () => {
+  console.log(`\n🔐 SecureNote API running → http://localhost:${PORT}`);
+  console.log(`   GET    http://localhost:${PORT}/api/notes`);
+  console.log(`   POST   http://localhost:${PORT}/api/notes  (Auth required)`);
+  console.log(`   DELETE http://localhost:${PORT}/api/notes/:id  (Auth required)\n`);
+});
